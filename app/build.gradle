@@ -9,7 +9,7 @@ project.ext {
     ext.gson_converter_version = '2.3.0'
     ext.gson_version = '2.8.2'
     ext.retrofit_version = '2.1.0'
-
+    ext.lifecycle_version = '1.1.1'
 }
 android {
     compileSdkVersion 27
@@ -42,6 +42,11 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    //Lifecycle extension
+    implementation "android.arch.lifecycle:runtime:$project.lifecycle_version"
+    implementation "android.arch.lifecycle:extensions:$project.lifecycle_version"
+
 
     //RETROFIT
     implementation("com.squareup.retrofit2:retrofit:$project.retrofit_version") {
