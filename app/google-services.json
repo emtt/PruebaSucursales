@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "570224452662",
+    "firebase_url": "https://prueba-banregio.firebaseio.com",
+    "project_id": "prueba-banregio",
+    "storage_bucket": "prueba-banregio.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:570224452662:android:93f404c3891ecd31",
+        "android_client_info": {
+          "package_name": "com.emt_sucursales"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "570224452662-pbtnj9jqatjv5qp36k09gi37t5adsa7e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.emt_sucursales",
+            "certificate_hash": "c4b4fa253a32791dec9dc33da0ddd9fed5cc5080"
+          }
+        },
+        {
+          "client_id": "570224452662-etrhvbb6pbhh5hvfm2dgcnglcht4fs00.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyRlWj4O5jGe8ibb7eyEtuPUZvQEouITI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "570224452662-etrhvbb6pbhh5hvfm2dgcnglcht4fs00.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
