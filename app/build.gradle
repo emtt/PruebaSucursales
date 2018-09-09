@@ -72,5 +72,9 @@ dependencies {
     //PROGRESS BUTTON
     implementation "com.github.dmytrodanylyk.android-process-button:library:$project.progress_button_version"
 
+    //CHUCK
+    debugImplementation 'com.readystatesoftware.chuck:library:1.1.0'
+    releaseImplementation 'com.readystatesoftware.chuck:library-no-op:1.1.0'
+
 }
 apply plugin: 'com.google.gms.google-services'

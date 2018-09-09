@@ -7,8 +7,8 @@
     <data>
 
         <variable
-            name="login"
-            type="com.emt_sucursales.brcoredata.model.Login" />
+            name="viewModel"
+            type="com.emt_sucursales.viewmodel.Login_vm" />
     </data>
 
     <android.support.constraint.ConstraintLayout
@@ -29,7 +29,8 @@
                 android:id="@+id/txtUser"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/usuario"/>
+                android:hint="@string/usuario"
+                app:addTextChangedListener="@{viewModel.getUsuarioTextWatcher}"/>
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -48,17 +49,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
-                android:hint="@string/password"/>
+                android:hint="@string/password"
+                app:addTextChangedListener="@{viewModel.getPasswordTextWatcher}"/>
         </android.support.design.widget.TextInputLayout>
 
-        <com.dd.processbutton.FlatButton
+        <com.dd.processbutton.iml.ActionProcessButton
             android:id="@+id/btnLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:paddingStart="50dp"
+            android:paddingEnd="50dp"
             android:text="@string/login"
+            android:onClick="@{viewModel::onLogin}"
             custom:pb_textComplete="@string/success"
             custom:pb_textProgress="@string/loading"
             android:textColor="@android:color/white"

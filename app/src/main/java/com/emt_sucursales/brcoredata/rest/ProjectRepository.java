@@ -1,9 +1,12 @@
 package com.emt_sucursales.brcoredata.rest;
 
 import android.arch.lifecycle.MutableLiveData;
+import android.util.Log;
 
+import com.emt_sucursales.App;
 import com.emt_sucursales.brcoredata.Constants;
 import com.emt_sucursales.brcoredata.model.Login;
+import com.readystatesoftware.chuck.ChuckInterceptor;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -41,8 +44,7 @@ public class ProjectRepository {
         httpClient.addInterceptor(new ChuckInterceptor(App.getAppContext()));  // <-- this is the important line!
         */
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-
-
+        httpClient.addInterceptor(new ChuckInterceptor(App.getAppContext()));  // <-- this is the important line!
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.SERVER)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -59,6 +61,7 @@ public class ProjectRepository {
         apiInterface.login(mLogin).enqueue(new Callback<Login>() {
             @Override
             public void onResponse(Call<Login> call, Response<Login> response) {
+                Log.d(TAG, response.body().toString());
                 if (response.isSuccessful()) {
                     data.postValue(response.body());
                 } else {
