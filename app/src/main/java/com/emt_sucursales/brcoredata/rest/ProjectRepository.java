@@ -6,6 +6,7 @@ import android.util.Log;
 import com.emt_sucursales.App;
 import com.emt_sucursales.brcoredata.Constants;
 import com.emt_sucursales.brcoredata.model.Login;
+import com.emt_sucursales.brcoredata.model.Sucursales;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 
 import okhttp3.OkHttpClient;
@@ -44,7 +45,7 @@ public class ProjectRepository {
         httpClient.addInterceptor(new ChuckInterceptor(App.getAppContext()));  // <-- this is the important line!
         */
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        httpClient.addInterceptor(new ChuckInterceptor(App.getAppContext()));  // <-- this is the important line!
+        httpClient.addInterceptor(new ChuckInterceptor(App.getAppContext()));
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.SERVER)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -77,5 +78,27 @@ public class ProjectRepository {
 
         return data;
 
+    }
+
+    public MutableLiveData<Sucursales> getSucursales(){
+        final MutableLiveData<Sucursales> data = new MutableLiveData<>();
+        apiInterface.getSucursales().enqueue(new Callback<Sucursales>() {
+            @Override
+            public void onResponse(Call<Sucursales> call, Response<Sucursales> response) {
+                Log.d(TAG, response.body().toString());
+                if (response.isSuccessful()) {
+                    data.postValue(response.body());
+                } else {
+                    data.postValue(null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Sucursales> call, Throwable t) {
+                data.postValue(null);
+            }
+        });
+
+        return data;
     }
 }
