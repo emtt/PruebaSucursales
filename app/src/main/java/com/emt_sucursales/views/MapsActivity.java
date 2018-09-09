@@ -30,6 +30,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.emt_sucursales.R;
+import com.emt_sucursales.Utils.CustomInfoWindowAdapter;
 import com.emt_sucursales.brcoredata.model.Sucursales;
 import com.emt_sucursales.databinding.ActivityMapsBinding;
 import com.emt_sucursales.viewmodel.Maps_vm;
@@ -163,16 +164,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Sucursales sucursal = sucursales.get(i);
                 LatLng location = new LatLng(Double.valueOf(sucursal.getLatitud()), Double.valueOf(sucursal.getLongitud()));
 
+                //Set Custom InfoWindow Adapter
+                CustomInfoWindowAdapter adapter = new CustomInfoWindowAdapter(MapsActivity.this);
+                mMap.setInfoWindowAdapter(adapter);
+
                 if (sucursal.getTipo().equalsIgnoreCase("s")) {
+
                     mMap.addMarker(new MarkerOptions()
                             .position(location)
                             .icon((BitmapDescriptorFactory.fromResource(R.drawable.bank)))
-                            .title("Sucursal:" + sucursal.getNOMBRE() + " " + sucursal.getDOMICILIO()));
+                            .title("Sucursal: " + sucursal.getNOMBRE())
+                            .snippet(sucursal.getDOMICILIO())
+                    );
+
+
                 } else if (sucursal.getTipo().equalsIgnoreCase("c")) {
+
                     mMap.addMarker(new MarkerOptions()
                             .position(location)
                             .icon((BitmapDescriptorFactory.fromResource(R.drawable.cajero)))
-                            .title("ATM:" + sucursal.getNOMBRE() + " " + sucursal.getDOMICILIO()));
+                            .title("ATM:" + sucursal.getNOMBRE() + " " + sucursal.getDOMICILIO())
+                            .snippet(sucursal.getDOMICILIO())
+                    );
+
                 }
             }
         }
