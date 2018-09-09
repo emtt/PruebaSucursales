@@ -48,7 +48,6 @@ dependencies {
     implementation "android.arch.lifecycle:runtime:$project.lifecycle_version"
     implementation "android.arch.lifecycle:extensions:$project.lifecycle_version"
 
-
     //RETROFIT
     implementation("com.squareup.retrofit2:retrofit:$project.retrofit_version") {
         // exclude Retrofit’s OkHttp dependency module and define your own module import

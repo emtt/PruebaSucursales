@@ -9,11 +9,8 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.databinding.DataBindingUtil;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -24,7 +21,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.Toast;
@@ -32,7 +28,6 @@ import android.widget.Toast;
 import com.emt_sucursales.R;
 import com.emt_sucursales.Utils.CustomInfoWindowAdapter;
 import com.emt_sucursales.brcoredata.model.Sucursales;
-import com.emt_sucursales.databinding.ActivityMapsBinding;
 import com.emt_sucursales.viewmodel.Maps_vm;
 import com.emt_sucursales.viewmodel.Maps_vm_factory;
 import com.google.android.gms.common.ConnectionResult;
@@ -41,15 +36,14 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -57,7 +51,6 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, LocationListener, LifecycleOwner {
     String TAG = MapsActivity.class.getSimpleName();
     private LifecycleRegistry mLifecycleRegistry;
-    //private ActivityMapsBinding activityMapsBinding;
     private Maps_vm viewModel;
     private GoogleMap mMap;
     private LocationManager locationManager;
@@ -79,7 +72,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // activityMapsBinding =  DataBindingUtil.setContentView(this, R.layout.activity_maps);
         Maps_vm_factory factory = new Maps_vm_factory();
         viewModel = ViewModelProviders.of(this, factory).get(Maps_vm.class);
-        // activityMapsBinding.setViewModel(viewModel);
 
 
         if (isGooglePlayServicesAvailable(this)) {
@@ -149,6 +141,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setOnInfoWindowClickListener(this);
+
+        LatLng currentUserLocation = new LatLng(19, -99);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentUserLocation, 4.5f));
+
         viewModel.getSucursales().observe(this, new Observer<List<Sucursales>>() {
             @Override
             public void onChanged(@Nullable List<Sucursales> sucursales) {
@@ -195,9 +191,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        Sucursales sucursal = (Sucursales) marker.getTag();
-
-
+        if(marker != null) {
+            Sucursales sucursal = (Sucursales) marker.getTag();
+            Gson gson = new Gson();
+            Intent intent = new Intent(MapsActivity.this, DetailActivity.class);
+            intent.putExtra("sucursal", gson.toJson(sucursal));
+            MapsActivity.this.startActivity(intent);
+        }
     }
 
     @Override
@@ -236,7 +236,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         int lat = (int) (location.getLatitude());
         int lng = (int) (location.getLongitude());
 
-
+        Log.d(TAG, "Location " + lat + " " + lng);
         if (controlLat != lat && controlLng != lng) {
 
             if (mMap != null) {
