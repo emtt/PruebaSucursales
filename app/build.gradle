@@ -65,6 +65,8 @@ dependencies {
     //MAPS
     implementation "com.google.android.gms:play-services-maps:$project.maps_version"
     implementation "com.google.maps.android:android-maps-utils:$project.maps_utils"
+    //LOCATION
+    implementation 'com.google.android.gms:play-services-location:15.0.1'
 
     //FIREBASE
     implementation "com.google.firebase:firebase-appindexing:$project.firebase_index_version"

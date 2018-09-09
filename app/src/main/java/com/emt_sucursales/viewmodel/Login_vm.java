@@ -30,6 +30,9 @@ public class Login_vm extends ViewModel {
         btnLogin.setMode(ActionProcessButton.Mode.ENDLESS);
         btnLogin.setProgress(1);
 
+        /**
+         * AGREGUÉ UN DELAY PARA MOSTRAR EL EFECTO EN EL BOTÓN
+         */
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
