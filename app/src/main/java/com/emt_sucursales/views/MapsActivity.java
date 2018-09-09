@@ -54,7 +54,7 @@ import java.util.Observable;
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, LocationListener, LifecycleOwner {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, LocationListener, LifecycleOwner {
     String TAG = MapsActivity.class.getSimpleName();
     private LifecycleRegistry mLifecycleRegistry;
     //private ActivityMapsBinding activityMapsBinding;
@@ -148,7 +148,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
+        mMap.setOnInfoWindowClickListener(this);
         viewModel.getSucursales().observe(this, new Observer<List<Sucursales>>() {
             @Override
             public void onChanged(@Nullable List<Sucursales> sucursales) {
@@ -164,28 +164,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Sucursales sucursal = sucursales.get(i);
                 LatLng location = new LatLng(Double.valueOf(sucursal.getLatitud()), Double.valueOf(sucursal.getLongitud()));
 
-                //Set Custom InfoWindow Adapter
                 CustomInfoWindowAdapter adapter = new CustomInfoWindowAdapter(MapsActivity.this);
                 mMap.setInfoWindowAdapter(adapter);
 
                 if (sucursal.getTipo().equalsIgnoreCase("s")) {
 
-                    mMap.addMarker(new MarkerOptions()
+                    Marker marker = mMap.addMarker(new MarkerOptions()
                             .position(location)
                             .icon((BitmapDescriptorFactory.fromResource(R.drawable.bank)))
                             .title("Sucursal: " + sucursal.getNOMBRE())
                             .snippet(sucursal.getDOMICILIO())
                     );
+                    marker.setTag(sucursal);
 
 
                 } else if (sucursal.getTipo().equalsIgnoreCase("c")) {
 
-                    mMap.addMarker(new MarkerOptions()
+                    Marker marker = mMap.addMarker(new MarkerOptions()
                             .position(location)
                             .icon((BitmapDescriptorFactory.fromResource(R.drawable.cajero)))
                             .title("ATM:" + sucursal.getNOMBRE() + " " + sucursal.getDOMICILIO())
                             .snippet(sucursal.getDOMICILIO())
                     );
+                    marker.setTag(sucursal);
 
                 }
             }
@@ -193,8 +194,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
-    public boolean onMarkerClick(Marker marker) {
-        return false;
+    public void onInfoWindowClick(Marker marker) {
+        Sucursales sucursal = (Sucursales) marker.getTag();
+
+
     }
 
     @Override
@@ -358,15 +361,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         return true;
     }
-
-    private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
-        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
-        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
-        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        vectorDrawable.draw(canvas);
-        return BitmapDescriptorFactory.fromBitmap(bitmap);
-    }
-
 
 }
