@@ -9,6 +9,8 @@ import com.emt_sucursales.brcoredata.model.Login;
 import com.emt_sucursales.brcoredata.model.Sucursales;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 
+import java.util.List;
+
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -80,12 +82,12 @@ public class ProjectRepository {
 
     }
 
-    public MutableLiveData<Sucursales> getSucursales(){
-        final MutableLiveData<Sucursales> data = new MutableLiveData<>();
-        apiInterface.getSucursales().enqueue(new Callback<Sucursales>() {
+    public MutableLiveData<List<Sucursales>> getSucursales(){
+        final MutableLiveData<List<Sucursales>> data = new MutableLiveData<>();
+        apiInterface.getSucursales().enqueue(new Callback<List<Sucursales>>() {
             @Override
-            public void onResponse(Call<Sucursales> call, Response<Sucursales> response) {
-                Log.d(TAG, response.body().toString());
+            public void onResponse(Call<List<Sucursales>> call, Response<List<Sucursales>> response) {
+                Log.d(TAG, " Total :" + response.body().size());
                 if (response.isSuccessful()) {
                     data.postValue(response.body());
                 } else {
@@ -94,7 +96,7 @@ public class ProjectRepository {
             }
 
             @Override
-            public void onFailure(Call<Sucursales> call, Throwable t) {
+            public void onFailure(Call<List<Sucursales>> call, Throwable t) {
                 data.postValue(null);
             }
         });

@@ -2,38 +2,62 @@ package com.emt_sucursales.views;
 
 import android.annotation.TargetApi;
 import android.app.Dialog;
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.LifecycleRegistry;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.databinding.DataBindingUtil;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 
 import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.emt_sucursales.R;
+import com.emt_sucursales.brcoredata.model.Sucursales;
+import com.emt_sucursales.databinding.ActivityMapsBinding;
+import com.emt_sucursales.viewmodel.Maps_vm;
+import com.emt_sucursales.viewmodel.Maps_vm_factory;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Observable;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, LocationListener, LifecycleOwner {
     String TAG = MapsActivity.class.getSimpleName();
+    private LifecycleRegistry mLifecycleRegistry;
+    //private ActivityMapsBinding activityMapsBinding;
+    private Maps_vm viewModel;
     private GoogleMap mMap;
     private LocationManager locationManager;
     private ArrayList<String> permissionsToRequest;
@@ -42,15 +66,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private final static int ALL_PERMISSIONS_RESULT = 101;
     private String provider;
 
+    int controlLat = 0;
+    int controlLng = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mLifecycleRegistry = new LifecycleRegistry(this);
+        mLifecycleRegistry.markState(Lifecycle.State.CREATED);
+
+        // activityMapsBinding =  DataBindingUtil.setContentView(this, R.layout.activity_maps);
+        Maps_vm_factory factory = new Maps_vm_factory();
+        viewModel = ViewModelProviders.of(this, factory).get(Maps_vm.class);
+        // activityMapsBinding.setViewModel(viewModel);
+
 
         if (isGooglePlayServicesAvailable(this)) {
-            Log.d(TAG, "Sí hay PlayServices");
+            System.out.println("PlayServices instalado");
         } else {
-            Log.d(TAG, "No hay PlayServices");
+            System.out.println("PlayServices no instalado");
         }
+
 
         permissions.add(ACCESS_FINE_LOCATION);
         permissions.add(ACCESS_COARSE_LOCATION);
@@ -66,6 +102,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             init();
         }
 
+
         setContentView(R.layout.activity_maps);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -75,6 +112,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void init() {
+
+
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
         provider = locationManager.getBestProvider(criteria, false);
@@ -108,6 +147,40 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        viewModel.getSucursales().observe(this, new Observer<List<Sucursales>>() {
+            @Override
+            public void onChanged(@Nullable List<Sucursales> sucursales) {
+                if (sucursales != null)
+                    setMarkers(sucursales);
+            }
+        });
+    }
+
+    private void setMarkers(List<Sucursales> sucursales) {
+        if (mMap != null) {
+            for (int i = 0; i < sucursales.size(); i++) {
+                Sucursales sucursal = sucursales.get(i);
+                LatLng location = new LatLng(Double.valueOf(sucursal.getLatitud()), Double.valueOf(sucursal.getLongitud()));
+
+                if (sucursal.getTipo().equalsIgnoreCase("s")) {
+                    mMap.addMarker(new MarkerOptions()
+                            .position(location)
+                            .icon((BitmapDescriptorFactory.fromResource(R.drawable.bank)))
+                            .title("Sucursal:" + sucursal.getNOMBRE() + " " + sucursal.getDOMICILIO()));
+                } else if (sucursal.getTipo().equalsIgnoreCase("c")) {
+                    mMap.addMarker(new MarkerOptions()
+                            .position(location)
+                            .icon((BitmapDescriptorFactory.fromResource(R.drawable.cajero)))
+                            .title("ATM:" + sucursal.getNOMBRE() + " " + sucursal.getDOMICILIO()));
+                }
+            }
+        }
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        return false;
     }
 
     @Override
@@ -130,14 +203,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    public void onStart() {
+        super.onStart();
+        mLifecycleRegistry.markState(Lifecycle.State.STARTED);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mLifecycleRegistry.markState(Lifecycle.State.DESTROYED);
+    }
+
     @Override
     public void onLocationChanged(Location location) {
-        Log.d(TAG, "Lat: " + location.getLatitude() + " Lng: " + location.getLongitude());
-        if(mMap != null) {
-            LatLng currentUserLocation = new LatLng(location.getLatitude(), location.getLongitude());
+        int lat = (int) (location.getLatitude());
+        int lng = (int) (location.getLongitude());
 
-            mMap.addMarker(new MarkerOptions().position(currentUserLocation).title("Usted está aquí"));
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentUserLocation, 5.5f));
+
+        if (controlLat != lat && controlLng != lng) {
+
+            if (mMap != null) {
+                LatLng currentUserLocation = new LatLng(location.getLatitude(), location.getLongitude());
+
+                mMap.addMarker(new MarkerOptions().position(currentUserLocation).title("Usted está aquí"));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentUserLocation, 9.5f));
+
+                controlLat = lat;
+                controlLng = lng;
+            }
         }
     }
 
@@ -156,6 +249,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onProviderDisabled(String provider) {
         Toast.makeText(this, "Disabled provider " + provider,
                 Toast.LENGTH_SHORT).show();
+    }
+
+    @NonNull
+    @Override
+    public Lifecycle getLifecycle() {
+        return mLifecycleRegistry;
     }
 
 
@@ -245,4 +344,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         return true;
     }
+
+    private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
+        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
+
+
 }

@@ -4,6 +4,8 @@ import com.emt_sucursales.brcoredata.Constants;
 import com.emt_sucursales.brcoredata.model.Login;
 import com.emt_sucursales.brcoredata.model.Sucursales;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -19,6 +21,6 @@ public interface APIInterface {
     Call<Login> login(@Body Login login);
 
     @GET(Constants.SUCURSALES)
-    Call<Sucursales> getSucursales();
+    Call<List<Sucursales>> getSucursales();
 
 }
