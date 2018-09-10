@@ -6,18 +6,27 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filterable;
 
 import com.emt_sucursales.R;
 import com.emt_sucursales.brcoredata.model.Sucursales;
 import com.emt_sucursales.databinding.ItemSucursalBinding;
+import com.emt_sucursales.interfaces.SucursalesAdapterListener;
+import android.widget.Filter;
+import android.widget.Filterable;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class SucursalesAdapter extends RecyclerView.Adapter<SucursalesAdapter.ItemHolder> {
+public class SucursalesAdapter extends RecyclerView.Adapter<SucursalesAdapter.ItemHolder> implements Filterable {
     private List<Sucursales> sucursales;
+    private List<Sucursales> sucursalesFiltered;
+    private SucursalesAdapterListener sucursalesAdapterListener;
 
-    public SucursalesAdapter(List<Sucursales> mSucursales) {
+    public SucursalesAdapter(List<Sucursales> mSucursales, SucursalesAdapterListener mSucursalesAdapterListener) {
         this.sucursales = mSucursales;
+        this.sucursalesFiltered = mSucursales;
+        this.sucursalesAdapterListener = mSucursalesAdapterListener;
     }
 
     @Override
@@ -31,21 +40,58 @@ public class SucursalesAdapter extends RecyclerView.Adapter<SucursalesAdapter.It
     @Override
     public void onBindViewHolder(final ItemHolder holder, final int position) {
         ItemSucursalBinding binding = holder.binding;
-        binding.setSucursal(sucursales.get(position));
+        binding.setSucursal(sucursalesFiltered.get(position));
 
         holder.binding.contactCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("TAG", sucursales.get(position).getNOMBRE());
+                //Log.d("TAG", sucursalesFiltered.get(position).getNOMBRE());
                 //mContactoItemListener.Onclick(sucursales.get(position));
-
+                sucursalesAdapterListener.onSucursalSelect(sucursalesFiltered.get(position));
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return sucursales.size();
+        return sucursalesFiltered.size();
+    }
+
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+
+                String charString = charSequence.toString();
+                if (charString.isEmpty()) {
+                    sucursalesFiltered = sucursales;
+                } else {
+                    List<Sucursales> filteredList = new ArrayList<>();
+                    for (Sucursales row : sucursales) {
+
+                        // name match condition. this might differ depending on your requirement
+                        // here we are looking for name or phone number match
+                        if (row.getNOMBRE().toLowerCase().contains(charString.toLowerCase()) || row.getDOMICILIO().contains(charSequence)) {
+                            filteredList.add(row);
+                        }
+                    }
+
+                    sucursalesFiltered = filteredList;
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = sucursalesFiltered;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                sucursalesFiltered = (ArrayList<Sucursales>) filterResults.values;
+                notifyDataSetChanged();
+            }
+        };
     }
 
 
