@@ -7,4 +7,5 @@
     <string name="login">Acceder</string>
     <string name="success">Listo</string>
     <string name="loading">Espera</string>
+    <string name="buscar">Buscar Sucursales</string>
 </resources>

@@ -23,6 +23,8 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.emt_sucursales.R;
@@ -59,6 +61,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ArrayList<String> permissions = new ArrayList<>();
     private final static int ALL_PERMISSIONS_RESULT = 101;
     private String provider;
+    private Button btnBuscar;
+    private String currLat;
+    private String currLng;
 
     int controlLat = 0;
     int controlLng = 0;
@@ -69,7 +74,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mLifecycleRegistry = new LifecycleRegistry(this);
         mLifecycleRegistry.markState(Lifecycle.State.CREATED);
 
-        // activityMapsBinding =  DataBindingUtil.setContentView(this, R.layout.activity_maps);
         Maps_vm_factory factory = new Maps_vm_factory();
         viewModel = ViewModelProviders.of(this, factory).get(Maps_vm.class);
 
@@ -85,6 +89,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         permissions.add(ACCESS_COARSE_LOCATION);
         permissionsToRequest = findUnAskedPermissions(permissions);
 
+
+        setContentView(R.layout.activity_maps);
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (permissionsToRequest.size() > 0) {
                 requestPermissions(permissionsToRequest.toArray(new String[permissionsToRequest.size()]), ALL_PERMISSIONS_RESULT);
@@ -95,17 +107,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             init();
         }
 
-
-        setContentView(R.layout.activity_maps);
-
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
     }
 
     private void init() {
-
+        btnBuscar = findViewById(R.id.btnBuscar);
+        btnBuscar.setOnClickListener(btnBuscarListener);
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
@@ -136,6 +142,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    View.OnClickListener btnBuscarListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(MapsActivity.this, BuscarActivity.class);
+            intent.putExtra("currLat", currLat);
+            intent.putExtra("currLng", currLng);
+            MapsActivity.this.startActivity(intent);
+        }
+    };
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -191,7 +206,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        if(marker != null) {
+        if (marker != null) {
             Sucursales sucursal = (Sucursales) marker.getTag();
             Gson gson = new Gson();
             Intent intent = new Intent(MapsActivity.this, DetailActivity.class);
@@ -235,6 +250,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onLocationChanged(Location location) {
         int lat = (int) (location.getLatitude());
         int lng = (int) (location.getLongitude());
+        currLat = String.valueOf(location.getLatitude());
+        currLng = String.valueOf(location.getLongitude());
 
         Log.d(TAG, "Location " + lat + " " + lng);
         if (controlLat != lat && controlLng != lng) {

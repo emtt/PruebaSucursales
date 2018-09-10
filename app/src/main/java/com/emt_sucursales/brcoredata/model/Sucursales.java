@@ -57,6 +57,16 @@ public class Sucursales {
     @Expose
     private String sucCiudadPrioridad;
 
+    private Double distancia;
+
+    public Double getDistancia() {
+        return distancia;
+    }
+
+    public void setDistancia(Double distancia) {
+        this.distancia = distancia;
+    }
+
     public String getID() {
         return iD;
     }
