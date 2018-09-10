@@ -116,9 +116,9 @@ public class ProjectRepository {
                     for(Sucursales s : response.body()){
                         Double distancia = meterDistanceBetweenPoints(Float.valueOf(""+currLat), Float.valueOf(""+currLng),
                                 Float.valueOf(s.getLatitud()), Float.valueOf(s.getLongitud()));
+
                         s.setDistancia(distancia);
                     }
-
                     Collections.sort(response.body(), new Comparator<Sucursales>() {
                         @Override
                         public int compare(Sucursales lhs, Sucursales rhs) {
