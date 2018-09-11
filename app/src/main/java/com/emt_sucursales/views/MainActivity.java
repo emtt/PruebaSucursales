@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements OnLoginCallback, 
     Observer<Login> loginObserver = new Observer<Login>() {
         @Override
         public void onChanged(@Nullable Login login) {
-            Log.d(TAG, "login" + login.toString());
             if (login != null) {
                 Intent i = new Intent(MainActivity.this, MapsActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

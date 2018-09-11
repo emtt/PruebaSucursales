@@ -44,8 +44,6 @@ public class SucursalesAdapter extends RecyclerView.Adapter<SucursalesAdapter.It
         holder.binding.contactCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Log.d("TAG", sucursalesFiltered.get(position).getNOMBRE());
-                //mContactoItemListener.Onclick(sucursales.get(position));
                 sucursalesAdapterListener.onSucursalSelect(sucursalesFiltered.get(position));
             }
         });
@@ -69,9 +67,6 @@ public class SucursalesAdapter extends RecyclerView.Adapter<SucursalesAdapter.It
                 } else {
                     List<Sucursales> filteredList = new ArrayList<>();
                     for (Sucursales row : sucursales) {
-
-                        // name match condition. this might differ depending on your requirement
-                        // here we are looking for name or phone number match
                         if (row.getNOMBRE().toLowerCase().contains(charString.toLowerCase()) || row.getDOMICILIO().contains(charSequence)) {
                             filteredList.add(row);
                         }
