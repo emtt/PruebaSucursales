@@ -7,7 +7,7 @@
 
         <variable
             name="sucursal"
-            type="com.emt_sucursales.brcoredata.model.Sucursales" />
+            type="sortingrv.c20.com.coreapp.model.Sucursales" />
 
         <variable
             name="context"

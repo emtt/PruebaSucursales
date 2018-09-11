@@ -1,4 +1,4 @@
-package com.emt_sucursales.brcoredata;
+package sortingrv.c20.com.coreapp;
 
 public class Constants {
 

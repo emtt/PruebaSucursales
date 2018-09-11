@@ -1,12 +1,10 @@
-package com.emt_sucursales.brcoredata.rest;
+package sortingrv.c20.com.coreapp.rest;
 
 import android.arch.lifecycle.MutableLiveData;
+import android.content.Context;
 import android.util.Log;
 
-import com.emt_sucursales.App;
-import com.emt_sucursales.brcoredata.Constants;
-import com.emt_sucursales.brcoredata.model.Login;
-import com.emt_sucursales.brcoredata.model.Sucursales;
+
 import com.readystatesoftware.chuck.ChuckInterceptor;
 
 import java.util.Collections;
@@ -19,37 +17,39 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import sortingrv.c20.com.coreapp.Constants;
+import sortingrv.c20.com.coreapp.model.Login;
+import sortingrv.c20.com.coreapp.model.Sucursales;
 
 public class ProjectRepository {
     private static String TAG = ProjectRepository.class.getSimpleName();
     private static ProjectRepository projectRepository;
     private APIInterface apiInterface;
+    private Context context;
 
-    public synchronized static ProjectRepository getInstance() {
+    public synchronized static ProjectRepository getInstance(Context mContext) {
+
         if (projectRepository == null) {
             if (projectRepository == null) {
-                projectRepository = new ProjectRepository();
+                projectRepository = new ProjectRepository(mContext);
             }
         }
         return projectRepository;
     }
 
-    private ProjectRepository() {
-
+    private ProjectRepository(Context mContext) {
+        this.context = mContext;
         /**
-        Comment by Efrain Morales
-        We can create an interceptor for check the traffic using HttpLoggingInterceptor
-        or ChuckInterceptor which isn't added to this project. So I leave this comment just for info.
-
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-        or
-
-        httpClient.addInterceptor(new ChuckInterceptor(App.getAppContext()));  // <-- this is the important line!
-        **/
+         Comment by Efrain Morales
+         We can create an interceptor for check the traffic using HttpLoggingInterceptor
+         or ChuckInterceptor which isn't added to this project. So I leave this comment just for info.
+         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+         or
+         httpClient.addInterceptor(new ChuckInterceptor(App.getAppContext()));  // <-- this is the important line!
+         **/
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        httpClient.addInterceptor(new ChuckInterceptor(App.getAppContext()));
+        httpClient.addInterceptor(new ChuckInterceptor(context));
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.SERVER)
                 .addConverterFactory(GsonConverterFactory.create())

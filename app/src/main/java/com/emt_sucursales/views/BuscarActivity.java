@@ -7,7 +7,6 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
-import android.database.DatabaseUtils;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -21,7 +20,6 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.emt_sucursales.R;
 import com.emt_sucursales.adapters.SucursalesAdapter;
-import com.emt_sucursales.brcoredata.model.Sucursales;
 import com.emt_sucursales.databinding.ActivityBuscarBinding;
 import com.emt_sucursales.interfaces.SucursalesAdapterListener;
 import com.emt_sucursales.viewmodel.Buscar_vm;
@@ -30,6 +28,8 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import sortingrv.c20.com.coreapp.model.Sucursales;
 
 public class BuscarActivity extends AppCompatActivity implements LifecycleOwner, SucursalesAdapterListener {
 

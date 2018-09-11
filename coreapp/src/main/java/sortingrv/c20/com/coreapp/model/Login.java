@@ -1,4 +1,4 @@
-package com.emt_sucursales.brcoredata.model;
+package sortingrv.c20.com.coreapp.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

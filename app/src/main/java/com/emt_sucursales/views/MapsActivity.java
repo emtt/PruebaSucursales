@@ -29,7 +29,6 @@ import android.widget.Toast;
 
 import com.emt_sucursales.R;
 import com.emt_sucursales.Utils.CustomInfoWindowAdapter;
-import com.emt_sucursales.brcoredata.model.Sucursales;
 import com.emt_sucursales.viewmodel.Maps_vm;
 import com.emt_sucursales.viewmodel.Maps_vm_factory;
 import com.google.android.gms.common.ConnectionResult;
@@ -46,6 +45,8 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import sortingrv.c20.com.coreapp.model.Sucursales;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;

@@ -1,0 +1,53 @@
+apply plugin: 'com.android.library'
+project.ext {
+    ext.okhttp_version = '3.10.0'
+    ext.gson_converter_version = '2.3.0'
+    ext.gson_version = '2.8.2'
+    ext.retrofit_version = '2.1.0'
+    ext.lifecycle_version = '1.1.1'
+}
+android {
+    compileSdkVersion 27
+
+
+
+    defaultConfig {
+        minSdkVersion 24
+        targetSdkVersion 27
+        versionCode 1
+        versionName "1.0"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    api  fileTree(dir: 'libs', include: ['*.jar'])
+
+    //Lifecycle extension
+    api "android.arch.lifecycle:runtime:$project.lifecycle_version"
+    api "android.arch.lifecycle:extensions:$project.lifecycle_version"
+
+    //RETROFIT
+    api ("com.squareup.retrofit2:retrofit:$project.retrofit_version") {
+        exclude module: 'okhttp'
+    }
+
+    //GSON
+    api  "com.google.code.gson:gson:$project.gson_version"
+    api  "com.squareup.retrofit2:converter-gson:$project.gson_converter_version"
+
+    //OKHTTP
+    api  "com.squareup.okhttp3:okhttp:$project.okhttp_version"
+
+    //CHUCK
+    debugImplementation 'com.readystatesoftware.chuck:library:1.1.0'
+    releaseImplementation 'com.readystatesoftware.chuck:library-no-op:1.1.0'
+}

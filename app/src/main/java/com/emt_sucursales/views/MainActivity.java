@@ -15,11 +15,12 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.emt_sucursales.R;
-import com.emt_sucursales.brcoredata.model.Login;
 import com.emt_sucursales.databinding.ActivityMainBinding;
 import com.emt_sucursales.interfaces.OnLoginCallback;
 import com.emt_sucursales.viewmodel.Login_vm;
 import com.emt_sucursales.viewmodel.Login_vm_factory;
+
+import sortingrv.c20.com.coreapp.model.Login;
 
 public class MainActivity extends AppCompatActivity implements OnLoginCallback, LifecycleOwner {
     String TAG = MainActivity.class.getSimpleName();
@@ -60,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements OnLoginCallback, 
     Observer<Login> loginObserver = new Observer<Login>() {
         @Override
         public void onChanged(@Nullable Login login) {
-            Log.d(TAG, "login" + login.toString());
             if (login != null) {
                 Intent i = new Intent(MainActivity.this, MapsActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

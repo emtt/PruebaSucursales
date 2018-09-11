@@ -2,21 +2,20 @@ package com.emt_sucursales.adapters;
 
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filterable;
 
 import com.emt_sucursales.R;
-import com.emt_sucursales.brcoredata.model.Sucursales;
 import com.emt_sucursales.databinding.ItemSucursalBinding;
 import com.emt_sucursales.interfaces.SucursalesAdapterListener;
 import android.widget.Filter;
-import android.widget.Filterable;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import sortingrv.c20.com.coreapp.model.Sucursales;
 
 public class SucursalesAdapter extends RecyclerView.Adapter<SucursalesAdapter.ItemHolder> implements Filterable {
     private List<Sucursales> sucursales;
@@ -45,8 +44,6 @@ public class SucursalesAdapter extends RecyclerView.Adapter<SucursalesAdapter.It
         holder.binding.contactCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Log.d("TAG", sucursalesFiltered.get(position).getNOMBRE());
-                //mContactoItemListener.Onclick(sucursales.get(position));
                 sucursalesAdapterListener.onSucursalSelect(sucursalesFiltered.get(position));
             }
         });
@@ -70,9 +67,6 @@ public class SucursalesAdapter extends RecyclerView.Adapter<SucursalesAdapter.It
                 } else {
                     List<Sucursales> filteredList = new ArrayList<>();
                     for (Sucursales row : sucursales) {
-
-                        // name match condition. this might differ depending on your requirement
-                        // here we are looking for name or phone number match
                         if (row.getNOMBRE().toLowerCase().contains(charString.toLowerCase()) || row.getDOMICILIO().contains(charSequence)) {
                             filteredList.add(row);
                         }

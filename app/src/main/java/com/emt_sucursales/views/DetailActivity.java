@@ -9,11 +9,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.emt_sucursales.R;
-import com.emt_sucursales.brcoredata.model.Sucursales;
 import com.emt_sucursales.databinding.ActivityDetailBinding;
 import com.emt_sucursales.viewmodel.DetailActivity_vm;
 import com.emt_sucursales.viewmodel.DetailActivity_vm_factory;
 import com.google.gson.Gson;
+
+import sortingrv.c20.com.coreapp.model.Sucursales;
 
 public class DetailActivity extends AppCompatActivity implements LifecycleOwner {
     private ActivityDetailBinding activityDetailBinding;

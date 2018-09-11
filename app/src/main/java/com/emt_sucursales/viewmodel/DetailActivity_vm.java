@@ -2,7 +2,8 @@ package com.emt_sucursales.viewmodel;
 
 import android.arch.lifecycle.ViewModel;
 
-import com.emt_sucursales.brcoredata.model.Sucursales;
+import sortingrv.c20.com.coreapp.model.Sucursales;
+
 
 public class DetailActivity_vm  extends ViewModel {
     public Sucursales sucursal;
