@@ -3,7 +3,8 @@ package com.emt_sucursales.viewmodel;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 
-import com.emt_sucursales.brcoredata.model.Sucursales;
+import sortingrv.c20.com.coreapp.model.Sucursales;
+
 
 public class DetailActivity_vm_factory extends ViewModelProvider.NewInstanceFactory {
     Sucursales sucursales;

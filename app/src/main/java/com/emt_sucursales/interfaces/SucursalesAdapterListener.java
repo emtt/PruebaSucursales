@@ -1,6 +1,7 @@
 package com.emt_sucursales.interfaces;
 
-import com.emt_sucursales.brcoredata.model.Sucursales;
+
+import sortingrv.c20.com.coreapp.model.Sucursales;
 
 public interface SucursalesAdapterListener {
     void onSucursalSelect(Sucursales sucursales);

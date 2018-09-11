@@ -9,10 +9,12 @@ import android.text.TextWatcher;
 import android.view.View;
 
 import com.dd.processbutton.iml.ActionProcessButton;
+import com.emt_sucursales.App;
 import com.emt_sucursales.R;
-import com.emt_sucursales.brcoredata.model.Login;
-import com.emt_sucursales.brcoredata.rest.ProjectRepository;
 import com.emt_sucursales.interfaces.OnLoginCallback;
+
+import sortingrv.c20.com.coreapp.model.Login;
+import sortingrv.c20.com.coreapp.rest.ProjectRepository;
 
 public class Login_vm extends ViewModel {
     String TAG = Login_vm.class.getSimpleName();
@@ -46,7 +48,7 @@ public class Login_vm extends ViewModel {
         Login l = new Login();
         l.setUser(user);
         l.setPassword(password);
-        mLogin = ProjectRepository.getInstance().login(l);
+        mLogin = ProjectRepository.getInstance(App.getAppContext()).login(l);
         return mLogin;
     }
 

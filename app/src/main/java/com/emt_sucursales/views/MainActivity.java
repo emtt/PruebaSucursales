@@ -15,11 +15,12 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.emt_sucursales.R;
-import com.emt_sucursales.brcoredata.model.Login;
 import com.emt_sucursales.databinding.ActivityMainBinding;
 import com.emt_sucursales.interfaces.OnLoginCallback;
 import com.emt_sucursales.viewmodel.Login_vm;
 import com.emt_sucursales.viewmodel.Login_vm_factory;
+
+import sortingrv.c20.com.coreapp.model.Login;
 
 public class MainActivity extends AppCompatActivity implements OnLoginCallback, LifecycleOwner {
     String TAG = MainActivity.class.getSimpleName();
