@@ -5,12 +5,23 @@ import android.content.Context;
 import android.util.Log;
 
 
+import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.Scheduler;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -54,6 +65,7 @@ public class ProjectRepository {
                 .baseUrl(Constants.SERVER)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(httpClient.build())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
 
         apiInterface = retrofit.create(APIInterface.class);
@@ -106,6 +118,35 @@ public class ProjectRepository {
         return data;
     }
 
+    /**
+     * Prueba con RX
+     */
+
+    public Observable<List<Sucursales>> getSucursales_RX(){
+        return apiInterface.getSucursalesRX();
+    }
+
+
+
+
+    /*
+    public Disposable getSucursalesRX() {
+        return apiInterface.getSucursalesRX()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(this::handleResponse, this::handleError);
+
+    }
+
+    public List<Sucursales> handleResponse(List<Sucursales> sucursalesList) {
+        return sucursalesList;
+    }
+
+    private void handleError(Throwable error) {
+        //Toast.makeText(this, "Error "+error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+    }
+*/
+
     public MutableLiveData<List<Sucursales>> getSucursalesByDistance(final Double currLat, final Double currLng) {
         final MutableLiveData<List<Sucursales>> data = new MutableLiveData<>();
         apiInterface.getSucursales().enqueue(new Callback<List<Sucursales>>() {
@@ -113,8 +154,8 @@ public class ProjectRepository {
             public void onResponse(Call<List<Sucursales>> call, Response<List<Sucursales>> response) {
                 if (response.isSuccessful()) {
 
-                    for(Sucursales s : response.body()){
-                        Double distancia = meterDistanceBetweenPoints(Float.valueOf(""+currLat), Float.valueOf(""+currLng),
+                    for (Sucursales s : response.body()) {
+                        Double distancia = meterDistanceBetweenPoints(Float.valueOf("" + currLat), Float.valueOf("" + currLng),
                                 Float.valueOf(s.getLatitud()), Float.valueOf(s.getLongitud()));
 
                         s.setDistancia(distancia);
@@ -143,7 +184,7 @@ public class ProjectRepository {
     }
 
     private double meterDistanceBetweenPoints(float lat_a, float lng_a, float lat_b, float lng_b) {
-        float pk = (float) (180.f/Math.PI);
+        float pk = (float) (180.f / Math.PI);
 
         float a1 = lat_a / pk;
         float a2 = lng_a / pk;
