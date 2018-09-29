@@ -46,6 +46,9 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.observers.DisposableSingleObserver;
 import sortingrv.c20.com.coreapp.model.Sucursales;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -68,6 +71,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     int controlLat = 0;
     int controlLng = 0;
+
+    private CompositeDisposable disposable = new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,6 +166,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng currentUserLocation = new LatLng(19, -99);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentUserLocation, 4.5f));
 
+        /*
         viewModel.getSucursales().observe(this, new Observer<List<Sucursales>>() {
             @Override
             public void onChanged(@Nullable List<Sucursales> sucursales) {
@@ -168,6 +174,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     setMarkers(sucursales);
             }
         });
+*/
+        disposable.add(
+                viewModel.getSurcursales()
+                        .subscribeWith(new DisposableObserver<List<Sucursales>>() {
+
+                            @Override
+                            public void onNext(List<Sucursales> sucursalesList) {
+                                if (sucursalesList != null)
+                                    setMarkers(sucursalesList);
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Log.e(TAG, "onError: " + e.getMessage());
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                Log.e(TAG, "onComplete: ");
+                            }
+                        }));
+
+
     }
 
     private void setMarkers(List<Sucursales> sucursales) {
@@ -245,6 +274,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onDestroy() {
         super.onDestroy();
         mLifecycleRegistry.markState(Lifecycle.State.DESTROYED);
+        disposable.clear();
     }
 
     @Override
